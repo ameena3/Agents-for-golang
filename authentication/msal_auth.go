@@ -10,8 +10,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AzureAD/microsoft-authentication-library-for-go/apps/confidential"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/AzureAD/microsoft-authentication-library-for-go/apps/confidential"
 )
 
 // MsalAuth implements AccessTokenProvider using MSAL for Go.
@@ -126,9 +127,9 @@ func (m *MsalAuth) GetAccessToken(ctx context.Context, resourceURL string, scope
 
 	if m.miCred != nil {
 		// Managed identity path via azidentity
-		tokenReq, err := m.miCred.GetToken(ctx, azidentity.GetTokenOptions(struct {
-			Scopes []string
-		}{Scopes: resolvedScopes}))
+		tokenReq, err := m.miCred.GetToken(ctx, policy.TokenRequestOptions{
+			Scopes: resolvedScopes,
+		})
 		if err != nil {
 			return "", fmt.Errorf("acquiring managed identity token for %s: %w", resourceURL, err)
 		}

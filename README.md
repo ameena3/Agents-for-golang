@@ -1,107 +1,191 @@
-# Microsoft 365 Agents SDK - Python
+# Microsoft 365 Agents SDK for Go
 
-![Build Status](https://github.com/microsoft/Agents-for-python/actions/workflows/python-package.yml/badge.svg)
-![PyPI Downloads](https://img.shields.io/pypi/dm/microsoft-agents-activity)
+[![Go Reference](https://pkg.go.dev/badge/github.com/microsoft/agents-sdk-go.svg)](https://pkg.go.dev/github.com/microsoft/agents-sdk-go)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/microsoft/agents-sdk-go/ci.yml)](https://github.com/microsoft/agents-sdk-go/actions)
 
-The Microsoft 365 Agent SDK simplifies building full stack, multichannel, trusted agents for platforms including M365, Teams, Copilot Studio, and Webchat. We also offer integrations with 3rd parties such as Facebook Messenger, Slack, or Twilio. The SDK provides developers with the building blocks to create agents that handle user interactions, orchestrate requests, reason responses, and collaborate with other agents.
+A Go SDK for building enterprise-grade conversational agents for Microsoft 365,
+Teams, Copilot Studio, and other channels.
 
-The M365 Agent SDK is a comprehensive framework for building enterprise-grade agents, enabling developers to integrate components from the Azure AI Foundry SDK, Semantic Kernel, as well as AI components from other vendors.
+## Overview
 
-For more information please see the parent project information here [Microsoft 365 Agents SDK](https://aka.ms/agents).
+The Microsoft 365 Agents SDK for Go provides everything needed to build, host, and
+deploy conversational agents on Microsoft platforms. It is the Go counterpart of the
+Python SDK and follows the same layered architecture, adapted to Go idioms: interfaces
+instead of abstract classes, struct embedding instead of inheritance, `context.Context`
+instead of async/await, and standard `error` returns instead of exceptions.
 
-## Getting Started
+## Requirements
 
-The best way to get started with these packages is to look at the samples available in [https://github.com/microsoft/Agents](https://github.com/microsoft/Agents)
+- Go 1.22 or later (1.24+ recommended)
+- An Azure Bot registration (App ID + secret, certificate, or Managed Identity)
 
-## Important Notice - Import Changes
+## Quick Start
 
-> **⚠️ Breaking Change**: Recent updates have changed the Python import structure from `microsoft.agents` to `microsoft_agents` (using underscores instead of dots). Please update your imports accordingly.
+### Option 1: AgentApplication (recommended, functional style)
 
-### Import Examples
+```go
+package main
 
-```python
-# Activity types and models
-from microsoft_agents.activity import Activity
+import (
+    "context"
+    "log"
 
-# Core hosting functionality
-from microsoft_agents.hosting.core import TurnContext
+    "github.com/microsoft/agents-sdk-go/hosting/core"
+    "github.com/microsoft/agents-sdk-go/hosting/core/app"
+    "github.com/microsoft/agents-sdk-go/hosting/core/storage"
+    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+)
 
-# aiohttp hosting
-from microsoft_agents.hosting.aiohttp import start_agent_process
+type MyState struct {
+    Count int `json:"count"`
+}
 
-# Teams-specific functionality (compatible only with activity handler)
-from microsoft_agents.hosting.teams import TeamsActivityHandler
+func main() {
+    store := storage.NewMemoryStorage()
 
-# Azure Blob storage
-from microsoft_agents.storage.blob import BlobStorage
+    agent := app.New[MyState](app.AppOptions[MyState]{Storage: store})
 
-# CosmosDB storage
-from microsoft_agents.storage.cosmos import CosmosDbStorage
+    agent.OnMembersAdded(func(ctx context.Context, tc *core.TurnContext, s MyState) error {
+        _, err := tc.SendActivity(ctx, core.Text("Hello! Send me a message."))
+        return err
+    })
 
-# MSAL authentication
-from microsoft_agents.authentication.msal import MsalAuth
+    agent.OnMessage("", func(ctx context.Context, tc *core.TurnContext, s MyState) error {
+        s.Count++
+        _, err := tc.SendActivity(ctx, core.Text("You said: "+tc.Activity().Text))
+        return err
+    })
 
-# Copilot Studio client
-from microsoft_agents.copilotstudio.client import CopilotClient
+    log.Fatal(nethttp.StartAgentProcess(context.Background(), agent, nethttp.ServerConfig{
+        Port:                 3978,
+        AllowUnauthenticated: true, // false in production
+    }))
+}
 ```
 
-## Packages Overview
+### Option 2: ActivityHandler (inheritance style)
 
-We offer the following PyPI packages to create conversational experiences based on Agents:
+```go
+package main
 
-| Package Name | PyPI Version | Description | Replaces |
-|--------------|-------------|-------------|----------|
-| `microsoft-agents-activity` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-activity)](https://pypi.org/project/microsoft-agents-activity/) | Types and validators implementing the Activity protocol spec. | `botframework-schema` |
-| `microsoft-agents-hosting-core` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-hosting-core)](https://pypi.org/project/microsoft-agents-hosting-core/) | Core library for Microsoft Agents hosting. | `botbuilder-core, botframework-connector` |
-| `microsoft-agents-hosting-aiohttp` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-hosting-aiohttp)](https://pypi.org/project/microsoft-agents-hosting-aiohttp/) | Configures aiohttp to run the Agent. | `botbuilder-integration-aiohttp` |
-| `microsoft-agents-hosting-teams` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-hosting-teams)](https://pypi.org/project/microsoft-agents-hosting-teams/) | Provides classes to host an Agent for Teams. | N/A |
-| `microsoft-agents-storage-blob` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-storage-blob)](https://pypi.org/project/microsoft-agents-storage-blob/) | Extension to use Azure Blob as storage. | `botbuilder-azure` |
-| `microsoft-agents-storage-cosmos` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-storage-cosmos)](https://pypi.org/project/microsoft-agents-storage-cosmos/) | Extension to use CosmosDB as storage. | `botbuilder-azure` |
-| `microsoft-agents-authentication-msal` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-authentication-msal)](https://pypi.org/project/microsoft-agents-authentication-msal/) | MSAL-based authentication for Microsoft Agents. | N/A |
+import (
+    "context"
+    "log"
+    "net/http"
 
-Additionally we provide a Copilot Studio Client, to interact with Agents created in CopilotStudio:
+    "github.com/microsoft/agents-sdk-go/hosting/core"
+    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+)
 
-| Package Name | PyPI Version | Description |
-|--------------|-------------|-------------|
-| `microsoft-agents-copilotstudio-client` | [![PyPI](https://img.shields.io/pypi/v/microsoft-agents-copilotstudio-client)](https://pypi.org/project/microsoft-agents-copilotstudio-client/) | Direct to Engine client to interact with Agents created in CopilotStudio |
+type EchoAgent struct {
+    core.ActivityHandler
+}
 
-### Environment requirements
+func (a *EchoAgent) OnMessageActivity(ctx context.Context, tc *core.TurnContext) error {
+    _, err := tc.SendActivity(ctx, core.Text("Echo: "+tc.Activity().Text))
+    return err
+}
 
-The packages should target Python 3.10 or greater, and can be used with modern Python package managers like pip, poetry, or conda.
+func main() {
+    adapter := nethttp.NewCloudAdapter(true)
+    agent := &EchoAgent{}
+    http.HandleFunc("/api/messages", nethttp.MessageHandler(adapter, agent))
+    log.Fatal(http.ListenAndServe(":3978", nil))
+}
+```
 
-> Note: We recommend using Python 3.11 or later for optimal performance and compatibility with all features. The SDK supports Python 3.10, 3.11, 3.12, 3.13, and 3.14.
+## Installation
 
-### Debugging
+Install individual packages as needed:
 
-The packages include source code to allow debugging in your preferred Python IDE or debugger.
+```bash
+# Core packages (required)
+go get github.com/microsoft/agents-sdk-go/activity
+go get github.com/microsoft/agents-sdk-go/hosting/core
+go get github.com/microsoft/agents-sdk-go/hosting/nethttp
 
-### Code Style
+# Teams extension
+go get github.com/microsoft/agents-sdk-go/hosting/teams
 
-We are using `black` and `flake8` for code formatting and linting.
+# Authentication
+go get github.com/microsoft/agents-sdk-go/authentication
+
+# Storage backends
+go get github.com/microsoft/agents-sdk-go/storage/blob
+go get github.com/microsoft/agents-sdk-go/storage/cosmos
+
+# Copilot Studio client
+go get github.com/microsoft/agents-sdk-go/copilotstudio/client
+```
+
+## Packages
+
+| Import Path | Description |
+|---|---|
+| `github.com/microsoft/agents-sdk-go/activity` | Activity protocol types, constructors, and constants |
+| `github.com/microsoft/agents-sdk-go/activity/card` | Card types: HeroCard, AdaptiveCard, OAuthCard, and more |
+| `github.com/microsoft/agents-sdk-go/activity/teams` | Teams-specific activity types and data structures |
+| `github.com/microsoft/agents-sdk-go/hosting/core` | Core agent runtime: Agent, TurnContext, ActivityHandler, middleware |
+| `github.com/microsoft/agents-sdk-go/hosting/core/app` | AgentApplication — modern functional-style agent framework |
+| `github.com/microsoft/agents-sdk-go/hosting/core/storage` | Storage interface and in-memory implementation |
+| `github.com/microsoft/agents-sdk-go/hosting/nethttp` | net/http adapter: CloudAdapter, MessageHandler, StartAgentProcess |
+| `github.com/microsoft/agents-sdk-go/hosting/teams` | TeamsActivityHandler with Teams-specific routing |
+| `github.com/microsoft/agents-sdk-go/authentication` | MSAL-based OAuth: client secret, certificate, managed identity |
+| `github.com/microsoft/agents-sdk-go/storage/blob` | Azure Blob Storage state persistence |
+| `github.com/microsoft/agents-sdk-go/storage/cosmos` | Azure Cosmos DB state persistence |
+| `github.com/microsoft/agents-sdk-go/copilotstudio/client` | Direct-to-Engine client for Copilot Studio agents |
+
+## Examples
+
+Ready-to-run examples are in the `examples/` directory:
+
+| Example | Description |
+|---|---|
+| `examples/echo-agent/` | Minimal echo agent using AgentApplication with in-memory state |
+| `examples/teams-agent/` | Teams agent with task modules and messaging extensions |
+| `examples/agent-to-agent/` | Orchestrator agent that delegates to skill agents |
+
+Run an example:
+
+```bash
+go run ./examples/echo-agent/
+```
+
+Then connect using the [M365 Agents Playground](https://github.com/OfficeDev/microsoft-365-agents-toolkit)
+or Azure Bot Service.
+
+## Documentation
+
+Full documentation is in the [`docs/`](./docs/) directory:
+
+- [Getting Started](./docs/getting-started.md)
+- [Architecture Overview](./docs/architecture.md)
+- [API Reference — activity](./docs/api-reference/activity.md)
+- [API Reference — hosting/core](./docs/api-reference/hosting-core.md)
+- [API Reference — hosting/teams](./docs/api-reference/hosting-teams.md)
+- [API Reference — authentication](./docs/api-reference/authentication.md)
+- [API Reference — storage/blob](./docs/api-reference/storage-blob.md)
+- [API Reference — storage/cosmos](./docs/api-reference/storage-cosmos.md)
+- [API Reference — copilotstudio/client](./docs/api-reference/copilotstudio.md)
 
 ## Contributing
 
-#### Note for Microsoft intenral developers: 
-- Internal Micrsoft Developers should join the Core identity group [Agents SDK Contrib](https://coreidentity.microsoft.com/manage/Entitlement/entitlement/agentssdkint-upyj)
+This project welcomes contributions and suggestions. Most contributions require you to
+agree to a Contributor License Agreement (CLA). For details, visit
+https://cla.opensource.microsoft.com.
 
-#### Non-Microsoft internal developers:
+This project has adopted the
+[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+See the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any questions.
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+## License
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
+This project may contain trademarks or logos for projects, products, or services.
+Authorized use of Microsoft trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
