@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/microsoft/agents-sdk-go/activity"
 	"github.com/microsoft/agents-sdk-go/hosting/core"
 	"github.com/microsoft/agents-sdk-go/hosting/core/connector"
 )
@@ -137,21 +138,44 @@ func GetMembers(ctx context.Context, tc *core.TurnContext) ([]map[string]interfa
 
 // GetPagedMembers retrieves members in pages.
 // Returns the members slice, a continuation token (empty string if no more pages), and an error.
-//
-// TODO: The Teams connector does not yet expose a paged members endpoint.
-// This stub returns all members in one page and an empty continuation token.
+// When pageSize <= 0 or pageSize >= total members, all members are returned in one page.
+// The continuationToken is treated as a start index encoded as a decimal integer string;
+// on the first call pass an empty string.
 func GetPagedMembers(ctx context.Context, tc *core.TurnContext, pageSize int, continuationToken string) ([]map[string]interface{}, string, error) {
-	members, err := GetMembers(ctx, tc)
+	all, err := GetMembers(ctx, tc)
 	if err != nil {
 		return nil, "", err
 	}
-	return members, "", nil
+
+	// If no page size requested or fits in one page, return everything.
+	if pageSize <= 0 || pageSize >= len(all) {
+		return all, "", nil
+	}
+
+	// Parse the start offset from continuationToken.
+	start := 0
+	if continuationToken != "" {
+		n, parseErr := fmt.Sscanf(continuationToken, "%d", &start)
+		if parseErr != nil || n != 1 || start < 0 || start >= len(all) {
+			start = 0
+		}
+	}
+
+	end := start + pageSize
+	if end > len(all) {
+		end = len(all)
+	}
+
+	nextToken := ""
+	if end < len(all) {
+		nextToken = fmt.Sprintf("%d", end)
+	}
+
+	return all[start:end], nextToken, nil
 }
 
-// SendNotificationToUser sends a notification to a user in Teams.
-//
-// TODO: The Teams connector does not yet expose a send-notification endpoint.
-// This is a stub that validates inputs and returns nil.
+// SendNotificationToUser sends a notification activity to a specific user in the current conversation.
+// The activity Recipient is set to the given userID before sending.
 func SendNotificationToUser(ctx context.Context, tc *core.TurnContext, userID string, notification map[string]interface{}) error {
 	if userID == "" {
 		return fmt.Errorf("teams_info: userID is required")
@@ -159,6 +183,20 @@ func SendNotificationToUser(ctx context.Context, tc *core.TurnContext, userID st
 	if notification == nil {
 		return fmt.Errorf("teams_info: notification is required")
 	}
-	// TODO: implement via Teams connector notification API
-	return nil
+
+	// Build a message activity from the notification map.
+	act := &activity.Activity{}
+	if text, ok := notification["text"].(string); ok {
+		act.Text = text
+	}
+	if t, ok := notification["type"].(string); ok {
+		act.Type = t
+	}
+	if act.Type == "" {
+		act.Type = activity.ActivityTypeMessage
+	}
+	act.Recipient = &activity.ChannelAccount{ID: userID}
+
+	_, err := tc.SendActivity(ctx, act)
+	return err
 }
