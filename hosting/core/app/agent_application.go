@@ -19,11 +19,6 @@ import (
 // caller-supplied application state for this turn.
 type HandlerFunc[StateT any] func(ctx context.Context, tc *core.TurnContext, appState StateT) error
 
-// routeHandlerAdapter bridges between the routes package's generic Handler type
-// (which uses interface{} for the turn context) and our concrete HandlerFunc.
-// We need this because Go generics do not allow covariant type parameters.
-type agentRouteList[StateT any] = routes.RouteList[HandlerFunc[StateT]]
-
 // AgentApplication is the modern, functional-style agent framework.
 // It replaces inheritance-based ActivityHandler with registered handler functions.
 //
@@ -36,9 +31,14 @@ type agentRouteList[StateT any] = routes.RouteList[HandlerFunc[StateT]]
 //	})
 //
 // StateT is the type of the application-specific state threaded through all handlers.
+//
+// The routing design: RouteList[StateT] stores routes whose Handler has signature
+// func(ctx context.Context, tcIface interface{}, appState StateT) error.
+// The tcIface parameter carries *core.TurnContext at runtime; it is interface{} because
+// the routes package must remain independent of the core package.
 type AgentApplication[StateT any] struct {
 	options     AppOptions[StateT]
-	routeList   *agentRouteList[StateT]
+	routeList   *routes.RouteList[StateT]
 	before      []func(context.Context, *core.TurnContext) error
 	after       []func(context.Context, *core.TurnContext) error
 	errHandlers []func(context.Context, *core.TurnContext, error) error
@@ -48,7 +48,7 @@ type AgentApplication[StateT any] struct {
 func New[StateT any](opts AppOptions[StateT]) *AgentApplication[StateT] {
 	return &AgentApplication[StateT]{
 		options:   opts,
-		routeList: routes.NewRouteList[HandlerFunc[StateT]](),
+		routeList: routes.NewRouteList[StateT](),
 	}
 }
 
@@ -71,7 +71,7 @@ func (a *AgentApplication[StateT]) OnTurn(ctx context.Context, tc *core.TurnCont
 		}
 	}
 
-	// --- Build turn state ---
+	// --- Build application state ---
 	var appState StateT
 	if a.options.TurnStateFactory != nil {
 		appState = a.options.TurnStateFactory()
@@ -85,15 +85,20 @@ func (a *AgentApplication[StateT]) OnTurn(ctx context.Context, tc *core.TurnCont
 		if err := turnState.Load(ctx, channelID, convID, userID); err != nil {
 			return a.handleError(ctx, tc, fmt.Errorf("load state: %w", err))
 		}
+		// App field carries the per-turn typed state.
 		turnState.App = appState
 		appState = turnState.App
 	}
 
 	// --- Find and execute matching route ---
-	route := a.routeList.FindRoute(ctx, tc.Activity)
+	route := a.routeList.FindRoute(ctx, tc.Activity())
 	if route == nil {
-		log.Printf("AgentApplication: no route matched activity type=%q name=%q", tc.Activity.Type, tc.Activity.Name)
+		act := tc.Activity()
+		log.Printf("AgentApplication: no route matched activity type=%q name=%q text=%q",
+			act.Type, act.Name, act.Text)
 	} else {
+		// route.Handler has signature: func(ctx, tcIface interface{}, appState StateT) error
+		// We pass tc as interface{} so the routes package stays decoupled from core.
 		if err := route.Handler(ctx, tc, appState); err != nil {
 			return a.handleError(ctx, tc, fmt.Errorf("route handler: %w", err))
 		}
@@ -117,14 +122,34 @@ func (a *AgentApplication[StateT]) OnTurn(ctx context.Context, tc *core.TurnCont
 	return nil
 }
 
+// addRoute is the internal helper for registering a route. The handler wrapper
+// converts the routes.Handler[StateT] convention (tcIface interface{}) back to
+// *core.TurnContext before calling the user-supplied HandlerFunc.
+func (a *AgentApplication[StateT]) addRoute(route *routes.Route[StateT]) {
+	a.routeList.Add(route)
+}
+
+// makeHandler wraps a HandlerFunc[StateT] into the routes.Handler[StateT] type.
+// The routes package passes the turn context as interface{}; we type-assert it back
+// to *core.TurnContext here so user-facing handlers always receive the concrete type.
+func makeHandler[StateT any](h HandlerFunc[StateT]) routes.Handler[StateT] {
+	return func(ctx context.Context, tcIface interface{}, appState StateT) error {
+		tc, ok := tcIface.(*core.TurnContext)
+		if !ok {
+			return fmt.Errorf("AgentApplication: unexpected turn context type %T", tcIface)
+		}
+		return h(ctx, tc, appState)
+	}
+}
+
 // OnMessage registers a handler for message activities.
 // If pattern is non-empty, only messages whose text matches the regular expression
 // are handled. An empty pattern matches all messages.
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnMessage(pattern string, handler HandlerFunc[StateT]) *AgentApplication[StateT] {
-	route := routes.NewMessageRoute(pattern, wrapHandler(handler))
-	a.routeList.Add(route)
+	route := routes.NewMessageRoute(pattern, makeHandler(handler))
+	a.addRoute(route)
 	return a
 }
 
@@ -132,8 +157,8 @@ func (a *AgentApplication[StateT]) OnMessage(pattern string, handler HandlerFunc
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnActivity(activityType string, handler HandlerFunc[StateT]) *AgentApplication[StateT] {
-	route := routes.NewActivityTypeRoute(activityType, wrapHandler(handler))
-	a.routeList.Add(route)
+	route := routes.NewActivityTypeRoute(activityType, makeHandler(handler))
+	a.addRoute(route)
 	return a
 }
 
@@ -142,8 +167,8 @@ func (a *AgentApplication[StateT]) OnActivity(activityType string, handler Handl
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnInvoke(name string, handler HandlerFunc[StateT]) *AgentApplication[StateT] {
-	route := routes.NewInvokeRoute(name, wrapHandler(handler))
-	a.routeList.Add(route)
+	route := routes.NewInvokeRoute(name, makeHandler(handler))
+	a.addRoute(route)
 	return a
 }
 
@@ -151,8 +176,8 @@ func (a *AgentApplication[StateT]) OnInvoke(name string, handler HandlerFunc[Sta
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnConversationUpdate(handler HandlerFunc[StateT]) *AgentApplication[StateT] {
-	route := routes.NewConversationUpdateRoute(wrapHandler(handler))
-	a.routeList.Add(route)
+	route := routes.NewConversationUpdateRoute(makeHandler(handler))
+	a.addRoute(route)
 	return a
 }
 
@@ -161,14 +186,14 @@ func (a *AgentApplication[StateT]) OnConversationUpdate(handler HandlerFunc[Stat
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnMembersAdded(handler HandlerFunc[StateT]) *AgentApplication[StateT] {
-	route := routes.NewMembersAddedRoute(wrapHandler(handler))
-	a.routeList.Add(route)
+	route := routes.NewMembersAddedRoute(makeHandler(handler))
+	a.addRoute(route)
 	return a
 }
 
-// OnError registers an error handler called whenever a turn pipeline step returns
-// an error. Multiple handlers can be registered; they are called in registration order.
-// If a handler itself returns a non-nil error, that error replaces the original.
+// OnError registers an error handler. Handlers are called in registration order
+// when any pipeline step returns an error. If a handler returns nil the error is
+// considered handled; if it returns a non-nil error that error is propagated.
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) OnError(handler func(context.Context, *core.TurnContext, error) error) *AgentApplication[StateT] {
@@ -177,7 +202,7 @@ func (a *AgentApplication[StateT]) OnError(handler func(context.Context, *core.T
 }
 
 // BeforeTurn registers a hook called before every turn, prior to route matching.
-// If the hook returns an error the turn is aborted and error handlers are called.
+// If the hook returns an error the turn is aborted and error handlers are invoked.
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) BeforeTurn(handler func(context.Context, *core.TurnContext) error) *AgentApplication[StateT] {
@@ -186,7 +211,7 @@ func (a *AgentApplication[StateT]) BeforeTurn(handler func(context.Context, *cor
 }
 
 // AfterTurn registers a hook called after every turn, after state has been saved.
-// If the hook returns an error, error handlers are called.
+// If the hook returns an error, error handlers are invoked.
 //
 // Returns the AgentApplication for method chaining.
 func (a *AgentApplication[StateT]) AfterTurn(handler func(context.Context, *core.TurnContext) error) *AgentApplication[StateT] {
@@ -194,10 +219,14 @@ func (a *AgentApplication[StateT]) AfterTurn(handler func(context.Context, *core
 	return a
 }
 
+// --- compile-time interface assertion ---
+
+var _ core.Agent = (*AgentApplication[struct{}])(nil)
+
 // --- helpers ---
 
 // handleError calls all registered error handlers in order.
-// If no error handlers are registered, the original error is returned.
+// If no error handlers are registered, the original error is returned unchanged.
 func (a *AgentApplication[StateT]) handleError(ctx context.Context, tc *core.TurnContext, err error) error {
 	if len(a.errHandlers) == 0 {
 		return err
@@ -207,19 +236,24 @@ func (a *AgentApplication[StateT]) handleError(ctx context.Context, tc *core.Tur
 		if herr := h(ctx, tc, current); herr != nil {
 			current = herr
 		} else {
+			// handler consumed the error
 			current = nil
+			break
 		}
 	}
 	return current
 }
 
 // extractStateKeys extracts the channel ID, conversation ID, and user ID from
-// a TurnContext for use as storage keys.
+// a TurnContext's Activity for use as storage keys.
 func extractStateKeys(tc *core.TurnContext) (channelID, conversationID, userID string) {
-	if tc.Activity == nil {
+	if tc == nil {
 		return "", "", ""
 	}
-	act := tc.Activity
+	act := tc.Activity()
+	if act == nil {
+		return "", "", ""
+	}
 	channelID = act.ChannelID
 	if act.Conversation != nil {
 		conversationID = act.Conversation.ID
@@ -230,125 +264,5 @@ func extractStateKeys(tc *core.TurnContext) (channelID, conversationID, userID s
 	return
 }
 
-// wrapHandler converts a HandlerFunc[StateT] into the routes.Handler[HandlerFunc[StateT]]
-// expected by the routes package. The routes package stores the HandlerFunc itself as
-// the "state" so we can retrieve and call it with the correct typed state later.
-//
-// Because routes.Handler has signature func(ctx, tc interface{}, state HandlerFunc[StateT]) error,
-// we need a small adapter that unwraps the interface{} turn context back to *core.TurnContext.
-func wrapHandler[StateT any](h HandlerFunc[StateT]) routes.Handler[HandlerFunc[StateT]] {
-	return func(ctx context.Context, tcIface interface{}, _ HandlerFunc[StateT]) error {
-		// tcIface is always *core.TurnContext — the AgentApplication passes it that way.
-		tc, ok := tcIface.(*core.TurnContext)
-		if !ok {
-			return fmt.Errorf("wrapHandler: unexpected turn context type %T", tcIface)
-		}
-		// The actual appState is not available here because it is constructed per-turn
-		// in OnTurn. We use a zero value; the AgentApplication overrides this by
-		// calling the handler directly through the route's Handler field below.
-		// See directCall in OnTurn for the actual invocation path.
-		_ = tc
-		return nil
-	}
-}
-
-// Because wrapHandler's indirection loses the appState, we store the raw HandlerFunc
-// in the Route.Handler slot using a different approach: we pass a *handlerBox that
-// carries both the HandlerFunc and (later) the appState. However, the simplest correct
-// approach in Go is to store the HandlerFunc directly and call it from OnTurn after
-// finding the route. Let's redesign:
-//
-// The routes.RouteList is parameterized by HandlerFunc[StateT] as the "state" type.
-// routes.Handler[HandlerFunc[StateT]] is func(ctx, tc interface{}, state HandlerFunc[StateT]) error.
-// We store a thin adapter as the Handler that ignores "state" and calls a captured closure.
-// The real HandlerFunc is captured in the closure.
-//
-// This is already correct in wrapHandler above — the Handler field on Route is set to the
-// thin adapter. But OnTurn calls route.Handler(ctx, tc, appState) where appState is StateT,
-// NOT HandlerFunc[StateT].
-//
-// The fix: use a dedicated internalRoute type that carries the HandlerFunc directly so that
-// OnTurn can call it without going through the RouteList Handler.
-
-// internalRoute wraps a Route together with the original HandlerFunc so that
-// OnTurn can call the handler with the correct typed appState.
-type internalRoute[StateT any] struct {
-	route   *routes.Route[HandlerFunc[StateT]]
-	handler HandlerFunc[StateT]
-}
-
-// AgentApplication (revised implementation) replaces the routeList field above
-// with an internalRouteList that also stores the HandlerFunc.
-
-// Note: The wrapHandler / RouteList approach above will not correctly pass appState.
-// We therefore keep a parallel slice of internalRoutes for execution, and use the
-// RouteList only for selector evaluation.
-
-func init() {
-	// This block intentionally left empty. The redesign below moves all route
-	// management into AgentApplication2 which uses internalRoute[StateT].
-}
-
-// ---- Final, correct implementation ----
-// We declare AgentApplication2 with the right internal structure.
-// AgentApplication above is kept for API compatibility but its OnTurn is rewritten
-// to use an internal slice.
-
-// Since Go doesn't allow redefining a type, we embed the full implementation in the
-// type defined above. The OnTurn above already correctly works:
-//
-//   route := a.routeList.FindRoute(ctx, tc.Activity)
-//   route.Handler(ctx, tc, appState)
-//
-// routes.Handler[HandlerFunc[StateT]] is: func(ctx, tcIface interface{}, state HandlerFunc[StateT])
-// BUT the route.Handler stored via wrapHandler ignores state.
-//
-// CORRECT FIX: Don't use routes.Handler indirection at all.
-// Store HandlerFunc[StateT] directly in a parallel slice; use RouteList only for selector.
-// The type parameter of RouteList becomes struct{ sel Selector; fn HandlerFunc[StateT] }
-// but RouteList[StateT] requires StateT to be the handler type...
-//
-// Cleanest solution: make the RouteList store HandlerFunc[StateT] as its StateT directly.
-// Then routes.Handler[HandlerFunc[StateT]] = func(ctx, tcIface interface{}, h HandlerFunc[StateT]) error
-// and in OnTurn we do:
-//   route.Handler(ctx, tc, actualAppState)  -- but route.Handler takes HandlerFunc[StateT] not StateT
-//
-// The correct pattern: the routes package stores the HandlerFunc as "state", and the
-// thin wrapper stored in route.Handler calls state(ctx, tc, actualAppState).
-// But route.Handler also receives actualAppState which is HandlerFunc[StateT] — wrong type.
-//
-// The only clean solution in Go 1.24 is to NOT use the routes.Handler indirection
-// and instead store the HandlerFunc in a custom wrapper. We keep RouteList for
-// selector matching only, and carry the HandlerFunc alongside.
-
-// We delete the wrapHandler approach and replace the routeList field type.
-// Because Go won't let us redefine AgentApplication, we instead use
-// an internal slice of selectors+handlers and bypass RouteList entirely.
-// The existing RouteList is still used for its priority sorting.
-// We keep the wrapHandler as a no-op and introduce a real internal list below.
-// The OnTurn above calls routeList.FindRoute then route.Handler(ctx, tc, appState).
-// appState is StateT. route.Handler is routes.Handler[HandlerFunc[StateT]] =
-//   func(ctx context.Context, tcIface interface{}, state HandlerFunc[StateT]) error
-// So state = appState which is StateT, not HandlerFunc[StateT]. TYPE MISMATCH.
-//
-// *** REAL FIX ***: Change routeList to *routes.RouteList[StateT].
-// Then routes.Handler[StateT] = func(ctx, tcIface interface{}, state StateT) error.
-// The handler closure captures the HandlerFunc and calls h(ctx, tc.(type), state).
-// OnTurn: route.Handler(ctx, tc, appState) where appState is StateT. ✓
-//
-// This is the correct design. The wrapHandler function below implements this correctly.
-// The AgentApplication struct's routeList field should be *routes.RouteList[StateT].
-
-// IMPORTANT: The type declaration at the top of this file already says:
-//   routeList   *agentRouteList[StateT]
-// where agentRouteList[StateT] = routes.RouteList[HandlerFunc[StateT]]
-// This is WRONG. We need routes.RouteList[StateT].
-//
-// Since we can't redefine the type we need to carefully read the definitions above.
-// Looking back: agentRouteList[StateT] = routes.RouteList[HandlerFunc[StateT]]
-// This stores HandlerFunc[StateT] as the "state" delivered to each handler.
-// routes.Handler[HandlerFunc[StateT]] = func(ctx, tcIface interface{}, state HandlerFunc[StateT]) error
-// In OnTurn: route.Handler(ctx, tc, appState) where appState is StateT -- TYPE ERROR.
-//
-// The code above has a logical error. We must fix the design.
-// The whole file must be rewritten with the correct type. Doing that now.
+// Ensure activity package is referenced (avoids unused import if only activity constants used).
+var _ = activity.ActivityTypeMessage
