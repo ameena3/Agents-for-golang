@@ -9,7 +9,7 @@ This directory contains the full documentation for the Go SDK.
 | Document | Description |
 |---|---|
 | [Getting Started](./getting-started.md) | Step-by-step guide from prerequisites to deployment |
-| [Architecture Overview](./architecture.md) | Layered architecture, request flow, design patterns, and Python-to-Go comparison |
+| [Architecture Overview](./architecture.md) | Layered architecture, request flow, and design patterns |
 
 ### API Reference
 

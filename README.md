@@ -9,10 +9,9 @@ Teams, Copilot Studio, and other channels.
 ## Overview
 
 The Microsoft 365 Agents SDK for Go provides everything needed to build, host, and
-deploy conversational agents on Microsoft platforms. It is the Go counterpart of the
-Python SDK and follows the same layered architecture, adapted to Go idioms: interfaces
-instead of abstract classes, struct embedding instead of inheritance, `context.Context`
-instead of async/await, and standard `error` returns instead of exceptions.
+deploy conversational agents on Microsoft platforms. It follows a layered architecture
+adapted to Go idioms: interfaces instead of abstract classes, struct embedding instead
+of inheritance, `context.Context` for request lifetimes, and standard `error` returns.
 
 ## Requirements
 

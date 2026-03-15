@@ -12,7 +12,7 @@ import (
 )
 
 // UserState holds per-user persistent state, keyed across all conversations by
-// "{channelID}/users/{userID}". This mirrors the Python SDK's UserState class.
+// "{channelID}/users/{userID}". Keyed by "{channelID}/users/{userID}" in storage.
 type UserState struct {
 	stor     storage.Storage
 	data     map[string]interface{}
