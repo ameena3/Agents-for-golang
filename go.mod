@@ -1,6 +1,6 @@
 module github.com/microsoft/agents-sdk-go
 
-go 1.26
+go 1.24
 
 require (
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.3.2
