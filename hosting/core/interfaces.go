@@ -44,13 +44,5 @@ type AccessTokenProvider interface {
 }
 
 // TurnContext holds the state for a single turn of conversation.
-// It is defined here as a forward declaration; the full implementation
-// lives in turn_context.go (provided by Team C).
-type TurnContext struct {
-	// Adapter is the channel adapter that received this turn.
-	Adapter ChannelAdapter
-	// Activity is the incoming activity for this turn.
-	Activity *activity.Activity
-	// TurnState is a key/value bag for storing per-turn data.
-	TurnState map[string]interface{}
-}
+// The full implementation lives in turn_context.go.
+// TurnContext is declared in turn_context.go.
