@@ -13,7 +13,7 @@ import (
 
 // ConversationState holds per-conversation persistent state.
 // The storage key is "{channelID}/conversations/{conversationID}", matching
-// the Python SDK's ConversationState.get_storage_key implementation.
+// the storage key convention used by the Agents SDK.
 type ConversationState struct {
 	stor     storage.Storage
 	data     map[string]interface{}

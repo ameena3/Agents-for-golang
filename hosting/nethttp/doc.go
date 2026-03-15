@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 // Package nethttp provides a net/http adapter for the Microsoft 365 Agents SDK.
-// It replaces the Python aiohttp and FastAPI adapters with a single standard-library
-// HTTP implementation suitable for any Go HTTP framework or the standard net/http server.
+// It provides a standard-library HTTP implementation suitable for any Go HTTP
+// framework or the standard net/http server.
 //
 // Basic usage:
 //

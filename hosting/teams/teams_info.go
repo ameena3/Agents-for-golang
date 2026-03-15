@@ -53,7 +53,6 @@ func GetTeamDetails(ctx context.Context, tc *core.TurnContext, teamID string) (m
 	}
 	client, err := getTeamsConnectorClient(tc)
 	if err != nil {
-		// TODO: return stub when connector not yet available
 		return nil, err
 	}
 	return client.GetTeamDetails(ctx, teamID)
@@ -77,7 +76,6 @@ func GetTeamChannels(ctx context.Context, tc *core.TurnContext, teamID string) (
 	}
 	client, err := getTeamsConnectorClient(tc)
 	if err != nil {
-		// TODO: return stub when connector not yet available
 		return nil, err
 	}
 	return client.GetChannels(ctx, teamID)
@@ -100,7 +98,6 @@ func GetMember(ctx context.Context, tc *core.TurnContext, userID string) (map[st
 
 	client, err := getTeamsConnectorClient(tc)
 	if err != nil {
-		// TODO: return stub when connector not yet available
 		return nil, err
 	}
 
@@ -130,7 +127,6 @@ func GetMembers(ctx context.Context, tc *core.TurnContext) ([]map[string]interfa
 
 	client, err := getTeamsConnectorClient(tc)
 	if err != nil {
-		// TODO: return stub when connector not yet available
 		return nil, err
 	}
 	return client.GetMembers(ctx, conversationID)

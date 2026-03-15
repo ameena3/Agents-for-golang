@@ -74,7 +74,7 @@ func LoadFromEnv() *AgentConfig {
 }
 
 // LoadFromMap loads agent configuration from a map of environment variables,
-// following the double-underscore hierarchy convention used by the Python SDK.
+// following the double-underscore hierarchy convention (e.g. "CONNECTIONS__MyConn__APP_ID").
 // For example, "CONNECTIONS__MyConn__APP_ID" sets Connections["MyConn"].AppID.
 func LoadFromMap(envVars map[string]string) map[string]interface{} {
 	result := make(map[string]interface{})

@@ -5,7 +5,7 @@ package state
 
 // TempState holds ephemeral per-turn data.
 // It is never persisted to storage and is discarded when the turn ends.
-// This mirrors the Python SDK's TempState class.
+// TempState holds ephemeral data that exists only for the current turn.
 type TempState struct {
 	data map[string]interface{}
 }

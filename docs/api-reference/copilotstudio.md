@@ -3,8 +3,7 @@
 Import path: `github.com/microsoft/agents-sdk-go/copilotstudio/client`
 
 The `copilotstudio/client` package provides a Direct-to-Engine HTTP client for
-communicating with agents created in Microsoft Copilot Studio. It is the Go
-counterpart of the Python `CopilotClient`.
+communicating with agents created in Microsoft Copilot Studio.
 
 ## CopilotClient
 

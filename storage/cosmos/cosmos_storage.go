@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 	"github.com/microsoft/agents-sdk-go/hosting/core/storage"
 )
@@ -31,18 +32,30 @@ func NewCosmosDBStorage(ctx context.Context, cfg Config) (*CosmosDBStorage, erro
 		cfg.PartitionKey = "/id"
 	}
 
-	if cfg.Key == "" {
-		return nil, fmt.Errorf("cosmos: Key is required (managed identity not yet implemented)")
-	}
+	var cosmosClient *azcosmos.Client
+	var err error
 
-	cred, err := azcosmos.NewKeyCredential(cfg.Key)
-	if err != nil {
-		return nil, fmt.Errorf("cosmos: creating key credential: %w", err)
-	}
-
-	cosmosClient, err := azcosmos.NewClientWithKey(cfg.Endpoint, cred, nil)
-	if err != nil {
-		return nil, fmt.Errorf("cosmos: creating client: %w", err)
+	switch {
+	case cfg.Key != "":
+		cred, credErr := azcosmos.NewKeyCredential(cfg.Key)
+		if credErr != nil {
+			return nil, fmt.Errorf("cosmos: creating key credential: %w", credErr)
+		}
+		cosmosClient, err = azcosmos.NewClientWithKey(cfg.Endpoint, cred, nil)
+		if err != nil {
+			return nil, fmt.Errorf("cosmos: creating client with key: %w", err)
+		}
+	case cfg.UseManagedIdentity:
+		miCred, credErr := azidentity.NewManagedIdentityCredential(nil)
+		if credErr != nil {
+			return nil, fmt.Errorf("cosmos: creating managed identity credential: %w", credErr)
+		}
+		cosmosClient, err = azcosmos.NewClient(cfg.Endpoint, miCred, nil)
+		if err != nil {
+			return nil, fmt.Errorf("cosmos: creating client with managed identity: %w", err)
+		}
+	default:
+		return nil, fmt.Errorf("cosmos: one of Key or UseManagedIdentity must be set")
 	}
 
 	container, err := cosmosClient.NewContainer(cfg.DatabaseID, cfg.ContainerID)
