@@ -12,7 +12,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 // ServerConfig configures the HTTP server.

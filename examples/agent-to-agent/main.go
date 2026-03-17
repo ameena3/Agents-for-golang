@@ -8,10 +8,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/app"
-	"github.com/microsoft/agents-sdk-go/hosting/nethttp"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/app"
+	"github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 // OrchestratorState tracks which skill agents we've called.

@@ -8,11 +8,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/app"
-	"github.com/microsoft/agents-sdk-go/hosting/core/app/routes"
-	"github.com/microsoft/agents-sdk-go/hosting/core/storage"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/app"
+	"github.com/ameena3/Agents-for-golang/hosting/core/app/routes"
+	"github.com/ameena3/Agents-for-golang/hosting/core/storage"
 )
 
 // --- helpers ---

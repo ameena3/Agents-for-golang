@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // ChannelServiceRoutes registers standard Bot Framework routes on the

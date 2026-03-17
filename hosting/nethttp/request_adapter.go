@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // RequestAdapter wraps an *http.Request for use with the SDK.

@@ -1,6 +1,6 @@
 # API Reference: copilotstudio/client
 
-Import path: `github.com/microsoft/agents-sdk-go/copilotstudio/client`
+Import path: `github.com/ameena3/Agents-for-golang/copilotstudio/client`
 
 The `copilotstudio/client` package provides a Direct-to-Engine HTTP client for
 communicating with agents created in Microsoft Copilot Studio.
@@ -133,7 +133,7 @@ import (
     "fmt"
     "log"
 
-    copilot "github.com/microsoft/agents-sdk-go/copilotstudio/client"
+    copilot "github.com/ameena3/Agents-for-golang/copilotstudio/client"
 )
 
 func main() {

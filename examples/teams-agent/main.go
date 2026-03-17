@@ -10,11 +10,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	teamstypes "github.com/microsoft/agents-sdk-go/activity/teams"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/nethttp"
-	hostingteams "github.com/microsoft/agents-sdk-go/hosting/teams"
+	"github.com/ameena3/Agents-for-golang/activity"
+	teamstypes "github.com/ameena3/Agents-for-golang/activity/teams"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/nethttp"
+	hostingteams "github.com/ameena3/Agents-for-golang/hosting/teams"
 )
 
 // TeamsAgent handles Teams-specific activities.

@@ -1,6 +1,6 @@
 # API Reference: hosting/teams
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/teams`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/teams`
 
 The `hosting/teams` package extends `ActivityHandler` with Teams-specific invoke and
 event routing. Use it when your agent targets Microsoft Teams and needs to handle
@@ -125,7 +125,7 @@ or a `TaskModuleMessageResponse` to show a completion message.
 
 ## TeamsInfo
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/teams`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/teams`
 
 `TeamsInfo` provides helper functions for querying Teams-specific information via
 the connector. It requires a `ConnectorClient` from the turn context's turn state.

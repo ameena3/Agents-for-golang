@@ -1,6 +1,6 @@
 # API Reference: activity
 
-Import path: `github.com/microsoft/agents-sdk-go/activity`
+Import path: `github.com/ameena3/Agents-for-golang/activity`
 
 The `activity` package implements the Microsoft 365 Agents protocol schema. It has no
 external dependencies beyond the Go standard library.
@@ -273,7 +273,7 @@ type CardAction struct {
 
 ## Card Types (activity/card)
 
-Import path: `github.com/microsoft/agents-sdk-go/activity/card`
+Import path: `github.com/ameena3/Agents-for-golang/activity/card`
 
 | Type | ContentType Constant |
 |---|---|
@@ -294,8 +294,8 @@ Example:
 
 ```go
 import (
-    "github.com/microsoft/agents-sdk-go/activity"
-    "github.com/microsoft/agents-sdk-go/activity/card"
+    "github.com/ameena3/Agents-for-golang/activity"
+    "github.com/ameena3/Agents-for-golang/activity/card"
 )
 
 hero := &card.HeroCard{
@@ -317,7 +317,7 @@ act := &activity.Activity{
 
 ## Teams Types (activity/teams)
 
-Import path: `github.com/microsoft/agents-sdk-go/activity/teams`
+Import path: `github.com/ameena3/Agents-for-golang/activity/teams`
 
 Key types used by `hosting/teams`:
 

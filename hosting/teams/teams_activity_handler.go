@@ -6,9 +6,9 @@ package teams
 import (
 	"context"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/activity/teams"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/activity/teams"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 // TeamsActivityHandler extends ActivityHandler with Teams-specific invoke routing.

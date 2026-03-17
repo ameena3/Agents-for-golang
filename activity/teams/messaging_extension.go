@@ -3,7 +3,7 @@
 
 package teams
 
-import "github.com/microsoft/agents-sdk-go/activity"
+import "github.com/ameena3/Agents-for-golang/activity"
 
 // MessagingExtensionParameter represents a messaging extension query parameter.
 type MessagingExtensionParameter struct {

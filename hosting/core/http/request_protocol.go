@@ -7,7 +7,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // HttpRequestProtocol abstracts an incoming HTTP request so that

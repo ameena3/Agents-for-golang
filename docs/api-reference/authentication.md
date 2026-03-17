@@ -1,6 +1,6 @@
 # API Reference: authentication
 
-Import path: `github.com/microsoft/agents-sdk-go/authentication`
+Import path: `github.com/ameena3/Agents-for-golang/authentication`
 
 The `authentication` package provides MSAL-based OAuth authentication for agents.
 `MsalAuth` implements `core.AccessTokenProvider` and handles token caching,

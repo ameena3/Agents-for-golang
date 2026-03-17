@@ -7,8 +7,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // InvokeResponseKey is the TurnState key used to store an invoke response activity.

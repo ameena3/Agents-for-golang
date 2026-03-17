@@ -7,7 +7,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 This is the **Microsoft 365 Agents SDK for Go**, a framework for building enterprise-grade
 conversational agents for M365, Teams, Copilot Studio, and other platforms.
 
-**Module**: `github.com/microsoft/agents-sdk-go`
+**Module**: `github.com/ameena3/Agents-for-golang`
 
 ## Development Setup
 

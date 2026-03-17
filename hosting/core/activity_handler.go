@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // ActivityHandler is a base struct that routes activities to typed handler methods.

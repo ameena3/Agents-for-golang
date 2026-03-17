@@ -6,7 +6,7 @@ package core
 import (
 	"context"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // Agent is the primary interface that all agents must implement.

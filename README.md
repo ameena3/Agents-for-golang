@@ -1,7 +1,7 @@
 # Microsoft 365 Agents SDK for Go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/microsoft/agents-sdk-go.svg)](https://pkg.go.dev/github.com/microsoft/agents-sdk-go)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/microsoft/agents-sdk-go/ci.yml)](https://github.com/microsoft/agents-sdk-go/actions)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ameena3/Agents-for-golang.svg)](https://pkg.go.dev/github.com/ameena3/Agents-for-golang)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/microsoft/agents-sdk-go/ci.yml)](https://github.com/ameena3/Agents-for-golang/actions)
 
 A Go SDK for building enterprise-grade conversational agents for Microsoft 365,
 Teams, Copilot Studio, and other channels.
@@ -29,10 +29,10 @@ import (
     "context"
     "log"
 
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/core/app"
-    "github.com/microsoft/agents-sdk-go/hosting/core/storage"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/core/app"
+    "github.com/ameena3/Agents-for-golang/hosting/core/storage"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 type MyState struct {
@@ -72,8 +72,8 @@ import (
     "log"
     "net/http"
 
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 type EchoAgent struct {
@@ -99,40 +99,40 @@ Install individual packages as needed:
 
 ```bash
 # Core packages (required)
-go get github.com/microsoft/agents-sdk-go/activity
-go get github.com/microsoft/agents-sdk-go/hosting/core
-go get github.com/microsoft/agents-sdk-go/hosting/nethttp
+go get github.com/ameena3/Agents-for-golang/activity
+go get github.com/ameena3/Agents-for-golang/hosting/core
+go get github.com/ameena3/Agents-for-golang/hosting/nethttp
 
 # Teams extension
-go get github.com/microsoft/agents-sdk-go/hosting/teams
+go get github.com/ameena3/Agents-for-golang/hosting/teams
 
 # Authentication
-go get github.com/microsoft/agents-sdk-go/authentication
+go get github.com/ameena3/Agents-for-golang/authentication
 
 # Storage backends
-go get github.com/microsoft/agents-sdk-go/storage/blob
-go get github.com/microsoft/agents-sdk-go/storage/cosmos
+go get github.com/ameena3/Agents-for-golang/storage/blob
+go get github.com/ameena3/Agents-for-golang/storage/cosmos
 
 # Copilot Studio client
-go get github.com/microsoft/agents-sdk-go/copilotstudio/client
+go get github.com/ameena3/Agents-for-golang/copilotstudio/client
 ```
 
 ## Packages
 
 | Import Path | Description |
 |---|---|
-| `github.com/microsoft/agents-sdk-go/activity` | Activity protocol types, constructors, and constants |
-| `github.com/microsoft/agents-sdk-go/activity/card` | Card types: HeroCard, AdaptiveCard, OAuthCard, and more |
-| `github.com/microsoft/agents-sdk-go/activity/teams` | Teams-specific activity types and data structures |
-| `github.com/microsoft/agents-sdk-go/hosting/core` | Core agent runtime: Agent, TurnContext, ActivityHandler, middleware |
-| `github.com/microsoft/agents-sdk-go/hosting/core/app` | AgentApplication — modern functional-style agent framework |
-| `github.com/microsoft/agents-sdk-go/hosting/core/storage` | Storage interface and in-memory implementation |
-| `github.com/microsoft/agents-sdk-go/hosting/nethttp` | net/http adapter: CloudAdapter, MessageHandler, StartAgentProcess |
-| `github.com/microsoft/agents-sdk-go/hosting/teams` | TeamsActivityHandler with Teams-specific routing |
-| `github.com/microsoft/agents-sdk-go/authentication` | MSAL-based OAuth: client secret, certificate, managed identity |
-| `github.com/microsoft/agents-sdk-go/storage/blob` | Azure Blob Storage state persistence |
-| `github.com/microsoft/agents-sdk-go/storage/cosmos` | Azure Cosmos DB state persistence |
-| `github.com/microsoft/agents-sdk-go/copilotstudio/client` | Direct-to-Engine client for Copilot Studio agents |
+| `github.com/ameena3/Agents-for-golang/activity` | Activity protocol types, constructors, and constants |
+| `github.com/ameena3/Agents-for-golang/activity/card` | Card types: HeroCard, AdaptiveCard, OAuthCard, and more |
+| `github.com/ameena3/Agents-for-golang/activity/teams` | Teams-specific activity types and data structures |
+| `github.com/ameena3/Agents-for-golang/hosting/core` | Core agent runtime: Agent, TurnContext, ActivityHandler, middleware |
+| `github.com/ameena3/Agents-for-golang/hosting/core/app` | AgentApplication — modern functional-style agent framework |
+| `github.com/ameena3/Agents-for-golang/hosting/core/storage` | Storage interface and in-memory implementation |
+| `github.com/ameena3/Agents-for-golang/hosting/nethttp` | net/http adapter: CloudAdapter, MessageHandler, StartAgentProcess |
+| `github.com/ameena3/Agents-for-golang/hosting/teams` | TeamsActivityHandler with Teams-specific routing |
+| `github.com/ameena3/Agents-for-golang/authentication` | MSAL-based OAuth: client secret, certificate, managed identity |
+| `github.com/ameena3/Agents-for-golang/storage/blob` | Azure Blob Storage state persistence |
+| `github.com/ameena3/Agents-for-golang/storage/cosmos` | Azure Cosmos DB state persistence |
+| `github.com/ameena3/Agents-for-golang/copilotstudio/client` | Direct-to-Engine client for Copilot Studio agents |
 
 ## Examples
 

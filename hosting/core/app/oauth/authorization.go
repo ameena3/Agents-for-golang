@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 const defaultSignInExpiry = 10 * time.Minute

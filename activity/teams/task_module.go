@@ -3,7 +3,7 @@
 
 package teams
 
-import "github.com/microsoft/agents-sdk-go/activity"
+import "github.com/ameena3/Agents-for-golang/activity"
 
 // TaskModuleRequestContext contains context for a task module request.
 type TaskModuleRequestContext struct {

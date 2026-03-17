@@ -276,7 +276,7 @@ last return value. Cancellation and deadlines propagate through the context.
 | Pydantic models with validators | Plain Go structs with `json` tags |
 | `asyncio` event loop | Standard goroutines + `context.Context` |
 | Python `exceptions` | Go `error` return values |
-| `pip install microsoft-agents-*` | `go get github.com/microsoft/agents-sdk-go/...` |
+| `pip install microsoft-agents-*` | `go get github.com/ameena3/Agents-for-golang/...` |
 | Multiple packages in `libraries/` | Multiple packages in one module |
 
 ## State Management

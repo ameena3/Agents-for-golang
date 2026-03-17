@@ -3,7 +3,7 @@
 
 package core
 
-import "github.com/microsoft/agents-sdk-go/activity"
+import "github.com/ameena3/Agents-for-golang/activity"
 
 // Text creates a simple text message activity with acceptingInput as the input hint.
 func Text(text string) *activity.Activity {

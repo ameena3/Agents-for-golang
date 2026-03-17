@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // Selector is a function that returns true if a route should handle the given activity.

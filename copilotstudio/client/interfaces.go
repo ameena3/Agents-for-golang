@@ -6,7 +6,7 @@ package client
 import (
 	"context"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // TokenProvider supplies OAuth access tokens.
