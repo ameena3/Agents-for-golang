@@ -8,12 +8,8 @@ pool:
 
 strategy:
   matrix:
-    Go_1_22:
-      GO_VERSION: '1.22'
-    Go_1_23:
-      GO_VERSION: '1.23'
-    Go_1_24:
-      GO_VERSION: '1.24'
+    Go_1_26:
+      GO_VERSION: '1.26'
 
 steps:
 - task: GoTool@0

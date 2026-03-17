@@ -1,6 +1,6 @@
 module github.com/microsoft/agents-sdk-go
 
-go 1.24
+go 1.26
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0
@@ -12,7 +12,6 @@ require (
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
@@ -21,7 +20,3 @@ require (
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
 )
-
-// Replace the monolithic azure-sdk-for-go (required transitively by azcosmos)
-// with a local empty stub so the module graph resolves in offline environments.
-replace github.com/Azure/azure-sdk-for-go v68.0.0+incompatible => ./internal/azure-sdk-legacy

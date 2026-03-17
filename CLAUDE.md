@@ -12,7 +12,7 @@ conversational agents for M365, Teams, Copilot Studio, and other platforms.
 ## Development Setup
 
 ### Requirements
-- Go 1.24+
+- Go 1.26+
 
 ### Setup
 ```bash

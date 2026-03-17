@@ -66,8 +66,7 @@ func NewBlobStorage(ctx context.Context, cfg Config) (*BlobStorage, error) {
 func (s *BlobStorage) initialize(ctx context.Context) error {
 	_, err := s.client.CreateContainer(ctx, s.containerName, nil)
 	if err != nil {
-		var respErr *azcore.ResponseError
-		if errors.As(err, &respErr) && respErr.ErrorCode == string(bloberror.ContainerAlreadyExists) {
+		if respErr := errors.AsType[*azcore.ResponseError](err); respErr != nil && respErr.ErrorCode == string(bloberror.ContainerAlreadyExists) {
 			return nil
 		}
 		return fmt.Errorf("creating container %s: %w", s.containerName, err)
@@ -83,8 +82,7 @@ func (s *BlobStorage) Read(ctx context.Context, keys []string) (map[string]stora
 		blobName := sanitizeKey(key)
 		resp, err := s.client.DownloadStream(ctx, s.containerName, blobName, nil)
 		if err != nil {
-			var respErr *azcore.ResponseError
-			if errors.As(err, &respErr) && respErr.StatusCode == 404 {
+			if respErr := errors.AsType[*azcore.ResponseError](err); respErr != nil && respErr.StatusCode == 404 {
 				continue // key not found is OK
 			}
 			return nil, fmt.Errorf("reading key %s: %w", key, err)
@@ -127,8 +125,7 @@ func (s *BlobStorage) Delete(ctx context.Context, keys []string) error {
 		blobName := sanitizeKey(key)
 		_, err := s.client.DeleteBlob(ctx, s.containerName, blobName, nil)
 		if err != nil {
-			var respErr *azcore.ResponseError
-			if errors.As(err, &respErr) && respErr.StatusCode == 404 {
+			if respErr := errors.AsType[*azcore.ResponseError](err); respErr != nil && respErr.StatusCode == 404 {
 				continue // already gone
 			}
 			return fmt.Errorf("deleting key %s: %w", key, err)
