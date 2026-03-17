@@ -1,6 +1,6 @@
 module github.com/ameena3/Agents-for-golang
 
-go 1.24
+go 1.26
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0
