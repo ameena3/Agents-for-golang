@@ -1,4 +1,4 @@
-module github.com/microsoft/agents-sdk-go
+module github.com/ameena3/Agents-for-golang
 
 go 1.26
 

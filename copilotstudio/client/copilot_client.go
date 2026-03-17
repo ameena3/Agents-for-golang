@@ -11,7 +11,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // CopilotClient communicates with a Copilot Studio agent via Direct-to-Engine protocol.

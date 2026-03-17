@@ -15,13 +15,13 @@ This directory contains the full documentation for the Go SDK.
 
 | Document | Package |
 |---|---|
-| [activity](./api-reference/activity.md) | `github.com/microsoft/agents-sdk-go/activity` |
-| [hosting/core](./api-reference/hosting-core.md) | `github.com/microsoft/agents-sdk-go/hosting/core` and `hosting/core/app` |
-| [hosting/teams](./api-reference/hosting-teams.md) | `github.com/microsoft/agents-sdk-go/hosting/teams` |
-| [authentication](./api-reference/authentication.md) | `github.com/microsoft/agents-sdk-go/authentication` |
-| [storage/blob](./api-reference/storage-blob.md) | `github.com/microsoft/agents-sdk-go/storage/blob` |
-| [storage/cosmos](./api-reference/storage-cosmos.md) | `github.com/microsoft/agents-sdk-go/storage/cosmos` |
-| [copilotstudio/client](./api-reference/copilotstudio.md) | `github.com/microsoft/agents-sdk-go/copilotstudio/client` |
+| [activity](./api-reference/activity.md) | `github.com/ameena3/Agents-for-golang/activity` |
+| [hosting/core](./api-reference/hosting-core.md) | `github.com/ameena3/Agents-for-golang/hosting/core` and `hosting/core/app` |
+| [hosting/teams](./api-reference/hosting-teams.md) | `github.com/ameena3/Agents-for-golang/hosting/teams` |
+| [authentication](./api-reference/authentication.md) | `github.com/ameena3/Agents-for-golang/authentication` |
+| [storage/blob](./api-reference/storage-blob.md) | `github.com/ameena3/Agents-for-golang/storage/blob` |
+| [storage/cosmos](./api-reference/storage-cosmos.md) | `github.com/ameena3/Agents-for-golang/storage/cosmos` |
+| [copilotstudio/client](./api-reference/copilotstudio.md) | `github.com/ameena3/Agents-for-golang/copilotstudio/client` |
 
 ### Examples
 
@@ -33,7 +33,7 @@ This directory contains the full documentation for the Go SDK.
 ## Module Path
 
 ```
-github.com/microsoft/agents-sdk-go
+github.com/ameena3/Agents-for-golang
 ```
 
 ## Go Version

@@ -7,7 +7,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 type testState struct{}

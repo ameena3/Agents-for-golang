@@ -6,7 +6,7 @@ package nethttp
 import (
 	"net/http"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 // MessageHandler returns an http.HandlerFunc that processes bot messages.

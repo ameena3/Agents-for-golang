@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 // AuthHandler wraps route handlers that require authentication.

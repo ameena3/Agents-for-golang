@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/app/routes"
-	"github.com/microsoft/agents-sdk-go/hosting/core/app/state"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/app/routes"
+	"github.com/ameena3/Agents-for-golang/hosting/core/app/state"
 )
 
 // HandlerFunc is the signature for every route handler registered with AgentApplication.

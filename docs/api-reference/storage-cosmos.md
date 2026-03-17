@@ -1,6 +1,6 @@
 # API Reference: storage/cosmos
 
-Import path: `github.com/microsoft/agents-sdk-go/storage/cosmos`
+Import path: `github.com/ameena3/Agents-for-golang/storage/cosmos`
 
 The `storage/cosmos` package implements `storage.Storage` using Azure Cosmos DB.
 Each state key is stored as a separate item in a configured container, using the
@@ -69,7 +69,7 @@ type Config struct {
 ```go
 import (
     "context"
-    "github.com/microsoft/agents-sdk-go/storage/cosmos"
+    "github.com/ameena3/Agents-for-golang/storage/cosmos"
 )
 
 store, err := cosmos.NewCosmosDBStorage(context.Background(), cosmos.Config{

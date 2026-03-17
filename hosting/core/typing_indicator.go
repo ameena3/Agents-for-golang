@@ -7,7 +7,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 // TypingIndicatorMiddleware sends a typing indicator at the start of each turn.

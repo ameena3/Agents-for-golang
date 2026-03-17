@@ -11,8 +11,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
 )
 
 // echoAgent is a simple agent that echoes back the received activity type via TurnContext.

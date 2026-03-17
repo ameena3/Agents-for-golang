@@ -10,9 +10,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // HttpAdapterBase provides common logic for processing HTTP requests

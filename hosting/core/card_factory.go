@@ -4,8 +4,8 @@
 package core
 
 import (
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/activity/card"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/activity/card"
 )
 
 // HeroCard creates an Attachment containing the given HeroCard.

@@ -1,6 +1,6 @@
 # API Reference: storage/blob
 
-Import path: `github.com/microsoft/agents-sdk-go/storage/blob`
+Import path: `github.com/ameena3/Agents-for-golang/storage/blob`
 
 The `storage/blob` package implements `storage.Storage` using Azure Blob Storage.
 Each state key is stored as a separate blob within a configured container. The
@@ -69,7 +69,7 @@ be provided.
 ```go
 import (
     "context"
-    "github.com/microsoft/agents-sdk-go/storage/blob"
+    "github.com/ameena3/Agents-for-golang/storage/blob"
 )
 
 store, err := blob.NewBlobStorage(context.Background(), blob.Config{

@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core"
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // CloudAdapter processes incoming HTTP requests and routes them to an agent.

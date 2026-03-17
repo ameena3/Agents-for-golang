@@ -1,6 +1,6 @@
 # API Reference: hosting/core
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/core`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/core`
 
 The `hosting/core` package is the runtime engine of the SDK. It provides the
 `Agent` interface, `TurnContext`, `ActivityHandler`, `ChannelAdapter`, and the
@@ -177,7 +177,7 @@ Convenience constructors in `hosting/core` for building common activity types:
 ## Card Factory Functions
 
 ```go
-import "github.com/microsoft/agents-sdk-go/hosting/core"
+import "github.com/ameena3/Agents-for-golang/hosting/core"
 
 // Returns an *activity.Attachment suitable for use in an activity
 core.HeroCard(card *card.HeroCard) *activity.Attachment
@@ -189,7 +189,7 @@ core.AdaptiveCard(content interface{}) *activity.Attachment
 
 ## AgentApplication[StateT]
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/core/app`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/core/app`
 
 `AgentApplication` is the modern, functional-style agent framework. It implements
 `core.Agent` and uses Go generics for type-safe application state.
@@ -276,7 +276,7 @@ Within the same priority level, routes match in registration order.
 
 ## Storage (hosting/core/storage)
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/core/storage`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/core/storage`
 
 ### Storage Interface
 
@@ -301,7 +301,7 @@ single-instance deployments that do not require persistence across restarts.
 
 ## TurnState (hosting/core/app/state)
 
-Import path: `github.com/microsoft/agents-sdk-go/hosting/core/app/state`
+Import path: `github.com/ameena3/Agents-for-golang/hosting/core/app/state`
 
 `TurnState[AppStateT]` manages the three state scopes for a turn. `AgentApplication`
 creates and manages this automatically when `Storage` is configured; you do not need

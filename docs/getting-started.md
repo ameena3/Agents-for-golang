@@ -27,11 +27,11 @@ SDK for Go, from prerequisites to a running service.
 ```bash
 mkdir my-agent && cd my-agent
 go mod init example.com/my-agent
-go get github.com/microsoft/agents-sdk-go/activity
-go get github.com/microsoft/agents-sdk-go/hosting/core
-go get github.com/microsoft/agents-sdk-go/hosting/core/app
-go get github.com/microsoft/agents-sdk-go/hosting/core/storage
-go get github.com/microsoft/agents-sdk-go/hosting/nethttp
+go get github.com/ameena3/Agents-for-golang/activity
+go get github.com/ameena3/Agents-for-golang/hosting/core
+go get github.com/ameena3/Agents-for-golang/hosting/core/app
+go get github.com/ameena3/Agents-for-golang/hosting/core/storage
+go get github.com/ameena3/Agents-for-golang/hosting/nethttp
 ```
 
 ## Step 2: Implement ActivityHandler (simple inheritance style)
@@ -49,8 +49,8 @@ import (
     "log"
     "net/http"
 
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 // MyAgent embeds ActivityHandler to get default no-op behavior for all activity types.
@@ -93,10 +93,10 @@ import (
     "context"
     "log"
 
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/core/app"
-    "github.com/microsoft/agents-sdk-go/hosting/core/storage"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/core/app"
+    "github.com/ameena3/Agents-for-golang/hosting/core/storage"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 // AppState is persisted across turns for each conversation.
@@ -183,11 +183,11 @@ import (
     "log"
     "net/http"
 
-    "github.com/microsoft/agents-sdk-go/activity"
-    teamstypes "github.com/microsoft/agents-sdk-go/activity/teams"
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
-    hostingteams "github.com/microsoft/agents-sdk-go/hosting/teams"
+    "github.com/ameena3/Agents-for-golang/activity"
+    teamstypes "github.com/ameena3/Agents-for-golang/activity/teams"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
+    hostingteams "github.com/ameena3/Agents-for-golang/hosting/teams"
 )
 
 type TeamsAgent struct {
@@ -250,11 +250,11 @@ func main() {
 For production, replace `AllowUnauthenticated: true` with real MSAL authentication.
 
 ```bash
-go get github.com/microsoft/agents-sdk-go/authentication
+go get github.com/ameena3/Agents-for-golang/authentication
 ```
 
 ```go
-import "github.com/microsoft/agents-sdk-go/authentication"
+import "github.com/ameena3/Agents-for-golang/authentication"
 
 auth, err := authentication.NewMsalAuth(authentication.Config{
     TenantID:     "your-tenant-id",

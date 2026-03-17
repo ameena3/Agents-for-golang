@@ -21,11 +21,11 @@ import (
     "log"
     "os"
 
-    "github.com/microsoft/agents-sdk-go/activity/config"
-    "github.com/microsoft/agents-sdk-go/hosting/core"
-    "github.com/microsoft/agents-sdk-go/hosting/core/app"
-    "github.com/microsoft/agents-sdk-go/hosting/core/storage"
-    "github.com/microsoft/agents-sdk-go/hosting/nethttp"
+    "github.com/ameena3/Agents-for-golang/activity/config"
+    "github.com/ameena3/Agents-for-golang/hosting/core"
+    "github.com/ameena3/Agents-for-golang/hosting/core/app"
+    "github.com/ameena3/Agents-for-golang/hosting/core/storage"
+    "github.com/ameena3/Agents-for-golang/hosting/nethttp"
 )
 
 // AppState holds per-conversation state for this agent.

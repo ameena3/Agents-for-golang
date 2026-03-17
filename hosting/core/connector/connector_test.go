@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/microsoft/agents-sdk-go/activity"
+	"github.com/ameena3/Agents-for-golang/activity"
 )
 
 type mockTokenProvider struct {

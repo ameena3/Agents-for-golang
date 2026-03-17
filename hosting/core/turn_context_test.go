@@ -8,8 +8,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/microsoft/agents-sdk-go/activity"
-	"github.com/microsoft/agents-sdk-go/hosting/core/authorization"
+	"github.com/ameena3/Agents-for-golang/activity"
+	"github.com/ameena3/Agents-for-golang/hosting/core/authorization"
 )
 
 // --- stub adapter for testing ---
